@@ -1,0 +1,55 @@
+version: '3'
+
+networks:
+  rabbit-network:
+    driver: bridge
+
+services:
+  rabbitmq-daemon:
+    image: rabbitmq:3.8.0-alpine
+    container_name: rabbitmq
+    hostname: rabbitmq
+    labels:
+      NAME: rabbitmq
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "RirhemtovBorlEjoofawCylmoashyamCanpodNocMyHiDoHini"
+      RABBITMQ_VM_MEMORY_HIGH_WATERMARK: "0.4"
+    volumes:
+      - ./data/rabbitmq:/var/lib/rabbitmq
+    networks:
+      - rabbit-network
+
+  rabbitmq-management:
+    image: heksahiti/rabbitmq:3.8.0-alpine
+    container_name: rabbitmq-management
+    hostname: rabbitmq-management
+    labels:
+      NAME: rabbitmq-management
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "RirhemtovBorlEjoofawCylmoashyamCanpodNocMyHiDoHini"
+      RABBITMQ_DEFAULT_USER: "admin"
+      RABBITMQ_DEFAULT_PASS: "AzGolQuoikMibJiUbvop"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    volumes:
+      - ./data/rabbitmq-management:/var/lib/rabbitmq
+      - ./enabled_plugins:/etc/rabbitmq/enabled_plugins
+      #- ./rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+    ports:
+      # AMQP
+      - 5671:5672
+      - 5672:5672
+      # epmd, a peer discovery service used by RabbitMQ nodes and CLI tools
+      - 4369:4369
+      # MQTT clients without and with TLS, if the MQTT plugin is enabled
+      - 1883:1883
+      - 8883:8883
+      # HTTP API clients, management UI and rabbitmqadmin (only if the management plugin is enabled)
+      - 15671:15671
+      - 15672:15672
+      # Used for inter-node and CLI tools communication
+      - 25672:25672
+      # STOMP clients without and with TLS (only if the STOMP plugin is enabled)
+      - 61613:61613
+      - 61614:61614
+    networks:
+      - rabbit-network

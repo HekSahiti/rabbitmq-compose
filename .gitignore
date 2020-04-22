@@ -1,0 +1,7 @@
+# local files
+.DS_Store
+
+# VIM
+.*.swp
+
+.idea
